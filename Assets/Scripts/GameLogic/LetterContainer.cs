@@ -14,6 +14,8 @@ public class LetterContainer : LetterContainerParent
     private void Awake()
     {
         RectTransform = GetComponent<RectTransform>();
+        Index = _index;
+        Letters = _letters;
     }
 
     public override void Place(Vector3 pos)
@@ -43,5 +45,12 @@ public class LetterContainer : LetterContainerParent
 
         foreach(var vis in _visualIndicators)
             vis.gameObject.SetActive(true);
+    }
+
+    public override void TurnOff()
+    {
+        gameObject.layer = 0;
+        Destroy(GetComponent<Collider2D>());
+        Destroy(this);
     }
 }
