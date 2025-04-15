@@ -1,22 +1,35 @@
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class ContainersManager : MonoBehaviour, IContainersManager
 {
     [SerializeField] private Transform _handler;
+    [SerializeField] private LetterContainerParent letters2, letters3, letters4; 
     [SerializeField] private List<LetterContainerParent> _containers = new();
 
     private Vector3 startPos, endPos;
     private float _length;
     private readonly float _separator = 20f;
 
-    private void Start()
+    public void ReceiveContainers(string[] containers)
     {
+        for(int i = 0; i < containers.Length; i++)
+        {
+            LetterContainerParent newCon = containers[i].Length switch
+            {
+                3 => Instantiate(letters3, _handler),
+                4 => Instantiate(letters4, _handler),
+                _ => Instantiate(letters2, _handler),
+            };
+
+            newCon.Initialize(containers[i].ToLowerInvariant(), i);
+            _containers.Add(newCon);
+        }
+
         _length = _handler.GetComponent<RectTransform>().sizeDelta.x;
         startPos = _handler.transform.localPosition;
 
-        foreach(var c in _containers)
+        foreach (var c in _containers)
         {
             c.GetManager(this);
         }

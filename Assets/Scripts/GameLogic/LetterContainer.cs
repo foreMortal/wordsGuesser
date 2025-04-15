@@ -5,18 +5,10 @@ using UnityEngine.UI;
 public class LetterContainer : LetterContainerParent
 {
     [SerializeField] Image[] _visualIndicators;
-    [SerializeField] private string _letters;
-    [SerializeField] private int _index;
     private bool _wasPlaced;
     public override Image[] VisualIndicators { get { return _visualIndicators; } }
 
     public override event Action<LetterContainerParent> ContainerGrabbed;
-    private void Awake()
-    {
-        RectTransform = GetComponent<RectTransform>();
-        Index = _index;
-        Letters = _letters;
-    }
 
     public override void Place(Vector3 pos)
     {
@@ -50,7 +42,5 @@ public class LetterContainer : LetterContainerParent
     public override void TurnOff()
     {
         gameObject.layer = 0;
-        Destroy(GetComponent<Collider2D>());
-        Destroy(this);
     }
 }

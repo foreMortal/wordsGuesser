@@ -37,7 +37,7 @@ public class RowValidator : MonoBehaviour, IRowValidator
     private string FindClosetWord(string word)
     {
         int maxCorrectCount = 0;
-        var mostCloseWord = "";
+        var mostCloseWord = "000000";
 
         for (int i = 0; i < _manager.WordsToGuess.Count; i++)
         {
