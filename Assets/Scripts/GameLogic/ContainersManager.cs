@@ -16,9 +16,9 @@ public class ContainersManager : MonoBehaviour, IContainersManager
 
     public async UniTask ReceiveContainers(string[] containers)
     {
-        var letters2 = await Addressables.LoadAssetAsync<GameObject>(_letters2Key);
-        var letters3 = await Addressables.LoadAssetAsync<GameObject>(_letters3Key);
-        var letters4 = await Addressables.LoadAssetAsync<GameObject>(_letters4Key);
+        var letters2 = await Addressables.LoadAssetAsync<GameObject>(_letters2Key).Task.AsUniTask();
+        var letters3 = await Addressables.LoadAssetAsync<GameObject>(_letters3Key).Task.AsUniTask();
+        var letters4 = await Addressables.LoadAssetAsync<GameObject>(_letters4Key).Task.AsUniTask();
 
         for (int i = 0; i < containers.Length; i++)
         {
