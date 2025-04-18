@@ -65,9 +65,9 @@ public class ContainersManager : MonoBehaviour, IContainersManager
 
         if (newPos.x > startPos.x)
             _handler.transform.localPosition = startPos;
-        else if (newPos.x < -endPos.x)
+        else if (newPos.x < -endPos.x && -endPos.x < startPos.x)
             _handler.transform.localPosition = -endPos;
-        else
+        else if(-endPos.x < startPos.x)
             _handler.transform.localPosition = newPos;
     }
 
