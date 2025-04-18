@@ -15,7 +15,7 @@ public class PI_ContainerMove : MonoBehaviour
     private LetterContainerParent _grabbedContainer;
     private Vector2 _cw_leftDownPoint, _cw_rightUpPoint;
     private bool _isPointerPressed, _isContainerGrabbed, _isVerified;
-
+    private float _grabbingTimer;
     private void OnEnable() => _controls.Enable();
     private void OnDisable() => _controls.Disable(); 
 
@@ -67,7 +67,8 @@ public class PI_ContainerMove : MonoBehaviour
             //move container and show placement validation
             else if (_isContainerGrabbed)
             {
-                _grabbedContainer.transform.position = pointerPos;
+                _grabbingTimer += Time.deltaTime * 3f;
+                _grabbedContainer.Move(Vector3.Lerp(_grabbedContainer.transform.position, pointerPos, _grabbingTimer));
 
                 if (Time.frameCount % 10 == 0)
                     _validator.ValidateContainerPosition(_grabbedContainer);
@@ -84,6 +85,7 @@ public class PI_ContainerMove : MonoBehaviour
                 _isContainerGrabbed = false;
                 _grabbedContainer = null;
             }
+            _grabbingTimer = 0f;
             _isPointerPressed = false;
             _isVerified = false;
         }

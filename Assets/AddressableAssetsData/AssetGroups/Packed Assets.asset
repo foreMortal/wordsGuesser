@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Packed Assets
+  m_EditorClassIdentifier: 
+  m_GroupName: Packed Assets
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 8edd70753b4530741adf606f413ddbd0
+  m_SerializeEntries:
+  - m_GUID: ab31266e3ee9eae4398086f270aa91d1
+    m_Address: Assets/Prefabs/GameField/LettersContainers/2LettersCon.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Containers
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06fc6e4733f5e774596a8aa0f8b4d249
+    m_Address: Assets/Prefabs/GameField/LettersContainers/3LettersCon.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Containers
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b66c72aff000284a9ac21c258125ef0
+    m_Address: Assets/Prefabs/GameField/LettersContainers/4LettersCon.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Containers
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 192dbeaaf1605ab44a8f49e24c309a86, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: e68a8878c56652f47ac05fbb25e747c8, type: 2}
+    - {fileID: 11400000, guid: 22a8ca20bac9ed144925a9bd0aeb1b33, type: 2}

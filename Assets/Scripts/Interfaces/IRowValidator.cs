@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IRowValidator
 {
-    public void ValidateRow();
+    public void ValidateRow(Color good, Color bad, Color neutral);
 }

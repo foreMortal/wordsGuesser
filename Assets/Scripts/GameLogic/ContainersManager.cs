@@ -1,25 +1,32 @@
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class ContainersManager : MonoBehaviour, IContainersManager
 {
     [SerializeField] private Transform _handler;
-    [SerializeField] private LetterContainerParent letters2, letters3, letters4; 
+    [SerializeField] private AssetReference _letters2Key, _letters3Key, _letters4Key;
     [SerializeField] private List<LetterContainerParent> _containers = new();
-
+    
     private Vector3 startPos, endPos;
     private float _length;
     private readonly float _separator = 20f;
 
-    public void ReceiveContainers(string[] containers)
+    public async UniTask ReceiveContainers(string[] containers)
     {
-        for(int i = 0; i < containers.Length; i++)
+        var letters2 = await Addressables.LoadAssetAsync<GameObject>(_letters2Key);
+        var letters3 = await Addressables.LoadAssetAsync<GameObject>(_letters3Key);
+        var letters4 = await Addressables.LoadAssetAsync<GameObject>(_letters4Key);
+
+        for (int i = 0; i < containers.Length; i++)
         {
             LetterContainerParent newCon = containers[i].Length switch
             {
-                3 => Instantiate(letters3, _handler),
-                4 => Instantiate(letters4, _handler),
-                _ => Instantiate(letters2, _handler),
+                3 => Instantiate(letters3, _handler).GetComponent<LetterContainerParent>(),
+                4 => Instantiate(letters4, _handler).GetComponent<LetterContainerParent>(),
+                _ => Instantiate(letters2, _handler).GetComponent<LetterContainerParent>(),
             };
 
             newCon.Initialize(containers[i].ToLowerInvariant(), i);
@@ -44,7 +51,10 @@ public class ContainersManager : MonoBehaviour, IContainersManager
         {
             xPos += _separator;
             xPos += _containers[i].RectTransform.sizeDelta.x;
-            _containers[i].transform.localPosition = new Vector2(xPos - _containers[i].RectTransform.sizeDelta.x / 2f, 0f);
+            Vector3 newPos = new Vector2(xPos - _containers[i].RectTransform.sizeDelta.x / 2f, 0f);
+
+            var t = _containers[i].transform;
+            var tween = DOTween.To(() => t.localPosition, x => t.localPosition = x, newPos, 0.1f);
         }
         endPos = startPos + new Vector3(xPos + _separator, 0f);
     }
@@ -55,7 +65,9 @@ public class ContainersManager : MonoBehaviour, IContainersManager
 
         if (newPos.x > startPos.x)
             _handler.transform.localPosition = startPos;
-        else if (newPos.x > -endPos.x)
+        else if (newPos.x < -endPos.x)
+            _handler.transform.localPosition = -endPos;
+        else
             _handler.transform.localPosition = newPos;
     }
 
@@ -63,7 +75,7 @@ public class ContainersManager : MonoBehaviour, IContainersManager
     {
         if(wasPlaced)
             _containers.Add(container);
-            
+
         container.transform.SetParent(_handler);
         AllignContainers();
         MoveContainers(container.RectTransform.sizeDelta.x / 2f);

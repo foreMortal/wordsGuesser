@@ -1,36 +1,61 @@
 using System.Text;
 using UnityEngine;
+using Zenject;
 
 public class RowValidator : MonoBehaviour, IRowValidator
 {
     [SerializeField] private ICharacterSpot[] _spots;
-    [SerializeField] private WordsManager _manager;
+    
+    private IWordsManager _manager;
+    private bool _isGuessed;
 
-    private void Awake()
+    [Inject]
+    public void Contruct(IWordsManager m)
+    {
+        _manager = m;
+    }
+
+    private void Start()
     {
         _spots = GetComponentsInChildren<ICharacterSpot>();
     }
 
-    public void ValidateRow()
+    public void ValidateRow(Color good, Color bad, Color neutral)
     {
-        var word = CombineAWord();
-
-        var closest = FindClosetWord(word);
-
-        bool correct = true;
-        for(int i = 0; i < closest.Length; i++)
+        if (!_isGuessed)
         {
-            if (word[i] == closest[i])
-                continue;
-            else
-                correct = false;
-        }
+            var word = CombineAWord();
 
-        if (correct)
-        {
-            _manager.WordGuessed(word);
-            foreach (var s in _spots)
-                s.WordGuessed();
+            var closest = FindClosetWord(word);
+
+            bool correct = true;
+            for (int i = 0; i < closest.Length; i++)
+            {
+                if (word[i] == closest[i])
+                {
+                    _spots[i].ShowLetterValidation(good, neutral);
+                    continue;
+                }
+                else
+                {
+                    Color col = word[i] switch
+                    {
+                        ' ' => neutral,
+                        _ => bad,
+                    };
+
+                    _spots[i].ShowLetterValidation(col, neutral);
+                    correct = false;
+                }
+            }
+
+            if (correct)
+            {
+                _manager.WordGuessed(word);
+                foreach (var s in _spots)
+                    s.WordGuessed();
+                _isGuessed = true;
+            }
         }
     }
 

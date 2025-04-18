@@ -1,21 +1,29 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Zenject;
 
 public class WordsManager : MonoBehaviour, IWordsManager
 {
     [SerializeField] private RowValidator[] _validators;
     [SerializeField] private List<string> _wordsToGuess;
     [SerializeField] private List<string> _guessedWords;
-    [SerializeField] private ContainersManager _conManager;
-    [SerializeField] private VictoryManager _vm;
 
+    private IVicatoryManager _victoryManager;
+    private IContainersManager _conManager;
+    private Color _good = new(0f, 183f/255f, 0f, 1f), _bad = new(183f/255f, 0f, 0f, 1f), _neutral = new(183f/255f, 183f/255f, 183f/255f, 1f);
     private readonly int maxWordsCount = 4;
 
     public List<string> WordsToGuess { get { return _wordsToGuess; } }
 
-    private async Task Awake()
+    [Inject]
+    public void Construct(IContainersManager m, IVicatoryManager vm)
+    {
+        _conManager = m;
+        _victoryManager = vm;
+    }
+
+    private async UniTask Start()
     {
         var info = await LevelsManager.LoadLevelInfo();
 
@@ -24,7 +32,7 @@ public class WordsManager : MonoBehaviour, IWordsManager
             _wordsToGuess.Add(info.wordsToGuess[i].ToLower());
         }
 
-        _conManager.ReceiveContainers(info.letterContainers);
+        await _conManager.ReceiveContainers(info.letterContainers);
     }
 
     public void WordGuessed(string word)
@@ -34,16 +42,14 @@ public class WordsManager : MonoBehaviour, IWordsManager
 
         if(_wordsToGuess.Count <= 0)
         {
-            _vm.OpenVictoryMenu(_guessedWords);
+            _victoryManager.OpenVictoryMenu(_guessedWords);
             LevelsManager.LevelWon();
         }
     }
 
     public void Validate()
     {
-        foreach(var v in _validators)
-        {
-            v.ValidateRow();
-        }
+        foreach (var v in _validators)
+            v.ValidateRow(_good, _bad, _neutral);
     }
 }

@@ -20,6 +20,7 @@ public abstract class LetterContainerParent : MonoBehaviour
         RectTransform = GetComponent<RectTransform>();
         GetComponentInChildren<TMP_Text>().text = letters;
     }
+    public abstract void Move(Vector3 pos);
     public abstract void Place(Vector3 pos);
     public abstract void Return();
     public abstract void Grab(Transform newParent);

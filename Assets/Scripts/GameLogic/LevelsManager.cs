@@ -1,12 +1,13 @@
 using Unity.Services.RemoteConfig;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 public static class LevelsManager
 {
     private static string[] _levelKeys;
     private static int _levelIndex = 0;
+    private static bool _offline;
 
     public struct userAttributes{}
 
@@ -17,7 +18,12 @@ public static class LevelsManager
         public string[] key;
     }
 
-    private static async Task InitializeRemoteConfigAsync()
+    public static void WorkInOfflineMode()
+    {
+        _offline = true;
+    }
+
+    private static async UniTask InitializeRemoteConfigAsync()
     {
         await UnityServices.InitializeAsync();
 
@@ -29,12 +35,15 @@ public static class LevelsManager
 
     public static void LevelWon()
     {
+        if (_offline)
+            return;
+
         _levelIndex++;
         if (_levelIndex > _levelKeys.Length - 1)
             _levelIndex = 0;
     }
 
-    public static async Task LoadLevelKeys()
+    public static async UniTask LoadLevelKeys()
     {
         await InitializeRemoteConfigAsync();
 
@@ -45,8 +54,15 @@ public static class LevelsManager
         RemoteConfigService.Instance.FetchConfigs(new userAttributes(), new appAttributes(), fAttributes);
     }
 
-    public static async Task<LevelInfo> LoadLevelInfo()
+    public static async UniTask<LevelInfo> LoadLevelInfo()
     {
+        if (_offline)
+        {
+            string[] wordsToGuess = new string[] { "Молоко", "Воздух", "Дерево", "Лопата" };
+            string[] containers = new string[] { "Мо", "локо", "Во", "зд", "ух", "Де", "ре", "во", "Лоп", "ата" };
+            return new LevelInfo(wordsToGuess, containers);
+        }
+
         var fAttributes = new filterAttributes();
         fAttributes.key = new string[] { _levelKeys[_levelIndex] };
         var response = await RemoteConfigService.Instance.FetchConfigsAsync(new userAttributes(), new appAttributes(), fAttributes);
